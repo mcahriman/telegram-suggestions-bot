@@ -1,0 +1,27 @@
+version: '3.8'
+services:
+  db:
+    container_name: db
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - '5432:5432'
+    volumes: 
+      - db:/var/lib/postgresql/data
+      - ./db/sql_script.txt:/docker-entrypoint-initdb.d/create_proc.sql
+  bot:
+    container_name: bot
+    build: .
+    restart: always
+    environment:
+      - HOSTNAME=db
+      - DATABASE=postgres
+      - USERNAME=postgres
+      - PORT_ID=postgres
+      - DB_PASS=postgres
+volumes:
+  db:
+    driver: local
